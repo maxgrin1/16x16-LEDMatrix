@@ -7,7 +7,7 @@
 #define MAXBRIGHTNESS 150
 CRGB leds[NUM_LEDS];
 #define SECONDS_PER_PALETTE 15
-int state = 0; //Geen idee waarom deze 0 moet zijn maar anders doet hij het niet.
+int state = 0;
 void setup() {
   delay(1000);
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS).setDither(MAXBRIGHTNESS < 255);
