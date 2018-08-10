@@ -7,7 +7,7 @@
 #define MAXBRIGHTNESS 150
 CRGB leds[NUM_LEDS];
 #define SECONDS_PER_PALETTE 15
-int state = 0;
+int state = 0; //Geen idee waarom deze 0 moet zijn maar anders doet hij het niet.
 void setup() {
   delay(1000);
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS).setDither(MAXBRIGHTNESS < 255);
@@ -26,13 +26,13 @@ CRGBPalette16 gTargetPalette( gGradientPalettes[0] );
 void loop(){
   //Check of er data is doorgegeven
   SerialCheck();
-//Als de loop hier komt heeft hij data(YEAAHHS),
-  while(state == 1){
+//Als de loop hier komt heeft hij data(YEAAHHS).
+  if(state == 1){
     fill_solid(leds, NUM_LEDS, CRGB::Black);
     FastLED.show();
     SerialCheck();
   }
-  while(state == 2){
+  while(state == 2){ //Moet while zijn omdat het een animatie is dat moet blijven loopen
   FastLED.clear(); //Zet alle leds uit anders kan je rare mixen gaan krijgen.
       EVERY_N_SECONDS( SECONDS_PER_PALETTE ) {
         gCurrentPaletteNumber = addmod8( gCurrentPaletteNumber, 1, gGradientPaletteCount);
@@ -44,18 +44,37 @@ void loop(){
       }
       colorwaves( leds, NUM_LEDS, gCurrentPalette);
       FastLED.show();
+      //Hier kan ik de felheid aanpassen, heeft continu effect
       SerialCheck();
   }
-  while(state == 3){
+  if(state == 3){
     fill_solid(leds, NUM_LEDS, CRGB::Red);
     FastLED.show();
     SerialCheck();
   }
-  while(state == 4){
+  if(state == 4){
     fill_solid(leds, NUM_LEDS, CRGB::Blue);
     FastLED.show();
     SerialCheck();
   }
+  if(state == 8){ //Plaats voor de felheid.
+    
+  }
 }
 
+//Check de Serial of er data beschikbaar is, zoja sla deze op in de 'state' variable.
+void SerialCheck(){
+  if(Serial.available() > 0){
+    state = Serial.read();
+    Serial.println(state);
+  }
+}
+
+void debugInfo(){
+  Serial.println("Sketch gemaakt door Max");
+  Serial.print("Sketch: ");
+  Serial.println(__FILE__);
+  Serial.print("Datum: ");
+  Serial.println(__DATE__);
+}
 
